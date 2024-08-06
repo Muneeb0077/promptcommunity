@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Profile from "@components/Profile";
 
 const OtherProfile = () => {
@@ -52,4 +52,12 @@ const OtherProfile = () => {
   );
 };
 
-export default OtherProfile;
+const Page = () => {
+  return (
+    <Suspense fallback={<p>Loading...</p>}>
+      <OtherProfile />
+    </Suspense>
+  );
+}
+
+export default Page;
