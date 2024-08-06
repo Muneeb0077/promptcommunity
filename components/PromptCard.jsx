@@ -32,7 +32,7 @@ const PromptCard = ({prompt , handleTagClick,handleEdit,handleDelete,handleUsern
           </div>
         </div>
         <div className="copy_btn" onClick={handleCopy}>
-          <Image src={copied === prompt.prompt ? '/assets/icons/tick.svg':'/assets/icons/copy.svg'} width={12} height={12} />
+          <Image src={copied === prompt.prompt ? '/assets/icons/tick.svg':'/assets/icons/copy.svg'} alt="tick" width={12} height={12} />
         </div>
       </div>
       <p className="my-4 font-satoshi text-sm text-gray-300">{prompt.prompt}</p>
