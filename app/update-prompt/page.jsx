@@ -14,6 +14,7 @@ const UpdatePrompt = () => {
     prompt: '',
     tag: '',
   });
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (promptId) {
@@ -24,12 +25,17 @@ const UpdatePrompt = () => {
             throw new Error('Failed to fetch prompt');
           }
           const data = await response.json();
-          setPost({
-            prompt: data.prompt,
-            tag: data.tag,
-          });
+          if (data && data.prompt && data.tag) {
+            setPost({
+              prompt: data.prompt,
+              tag: data.tag,
+            });
+          } else {
+            throw new Error('Invalid prompt data');
+          }
         } catch (error) {
           console.error('Error fetching prompt:', error);
+          setError('Failed to fetch prompt. Please try again.');
         }
       };
       getUserPrompt();
@@ -41,12 +47,15 @@ const UpdatePrompt = () => {
     setSubmitting(true);
 
     if (!promptId) {
-      return alert('Prompt ID not found');
+      setError('Prompt ID not found');
+      setSubmitting(false);
+      return;
     }
 
     try {
       const response = await fetch(`/api/prompt/${promptId}`, {
         method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           prompt: post.prompt,
           tag: post.tag,
@@ -60,19 +69,23 @@ const UpdatePrompt = () => {
       }
     } catch (error) {
       console.error('An unexpected error happened:', error);
+      setError('Failed to update prompt. Please try again.');
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <Form
-      type="Edit"
-      post={post}
-      setPost={setPost}
-      submitting={submitting}
-      handleSubmit={updatePrompt}
-    />
+    <div>
+      {error && <p className="error-text">{error}</p>}
+      <Form
+        type="Edit"
+        post={post}
+        setPost={setPost}
+        submitting={submitting}
+        handleSubmit={updatePrompt}
+      />
+    </div>
   );
 };
 

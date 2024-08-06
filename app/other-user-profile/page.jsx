@@ -25,8 +25,9 @@ const OtherProfile = () => {
           setUsername(data[0].creator.username);
         }
       } catch (error) {
-        console.error(error);
-         } finally {
+        console.error('Error fetching prompts:', error);
+        // Optionally set an error state to display an error message
+      } finally {
         setLoading(false);
       }
     };
@@ -34,7 +35,7 @@ const OtherProfile = () => {
     if (otherUserId) {
       fetchPrompts();
     } else {
-      setLoading(false);
+      setLoading(false); // No userId provided, stop loading
     }
   }, [otherUserId]);
 
