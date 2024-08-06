@@ -1,39 +1,54 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-
 import Profile from "@components/Profile";
 
 const OtherProfile = () => {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const otherUserId = searchParams.get("id");
 
   const [posts, setPosts] = useState([]);
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState("Guest");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchprompts = async () => {
+    const fetchPrompts = async () => {
       try {
         const response = await fetch(`/api/users/${otherUserId}/posts`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
         const data = await response.json();
         setPosts(data);
-        if (data.length > 0) {
+        if (data.length > 0 && data[0].creator) {
           setUsername(data[0].creator.username);
         }
       } catch (error) {
         console.error(error);
+         } finally {
+        setLoading(false);
       }
-    }
+    };
+
     if (otherUserId) {
-      fetchprompts();
+      fetchPrompts();
+    } else {
+      setLoading(false);
     }
   }, [otherUserId]);
 
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
   return (
-    <Profile name={username.toUpperCase()} desc={`Welcome to ${username}'s personalised profile page`} data={posts} />
+    <Profile
+      name={username.toUpperCase()}
+      desc={`Welcome to ${username}'s personalized profile page`}
+      data={posts}
+    />
   );
-}
+};
 
 export default OtherProfile;
