@@ -54,7 +54,7 @@ const OtherProfile = () => {
 
 const Page = () => {
   return (
-    <Suspense fallback={<p>Loading...</p>}>
+    <Suspense fallback={<p className="text-white">Loading...</p>}>
       <OtherProfile />
     </Suspense>
   );
